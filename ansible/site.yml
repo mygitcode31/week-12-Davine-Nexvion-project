@@ -1,0 +1,56 @@
+---
+- name: Configure and verify Nexvion deployment host
+  hosts: nexvion
+  become: true
+  gather_facts: true
+
+  vars:
+    required_docker_packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+
+    project_directory: "{{ playbook_dir }}/.."
+
+  tasks:
+    - name: Ensure required Docker packages are installed
+      ansible.builtin.apt:
+        name: "{{ required_docker_packages }}"
+        state: present
+        update_cache: false
+
+    - name: Ensure Docker service is enabled and running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Validate Docker Compose configuration
+      ansible.builtin.command:
+        cmd: docker compose config -q
+        chdir: "{{ project_directory }}"
+      changed_when: false
+
+    - name: Verify Nexvion homepage
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8081/
+        method: GET
+        status_code: 200
+      register: homepage_check
+
+    - name: Verify Nexvion products page
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8081/products.html
+        method: GET
+        status_code: 200
+
+    - name: Verify Nexvion payment page
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8081/payment.html
+        method: GET
+        status_code: 200
+
+    - name: Display deployment verification result
+      ansible.builtin.debug:
+        msg: "Nexvion host configuration and all three website pages verified successfully."
