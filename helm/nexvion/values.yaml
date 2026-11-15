@@ -1,0 +1,23 @@
+replicaCount: 2
+
+image:
+  repository: docker.io/library/nexvion-web
+  tag: "v1"
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: traefik
+  host: ""
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 32Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
