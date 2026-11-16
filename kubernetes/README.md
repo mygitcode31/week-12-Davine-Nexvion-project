@@ -7,7 +7,7 @@ Nexvion is deployed as a static e-commerce frontend on a single-node K3s cluster
 - Kubernetes distribution: K3s
 - Container runtime: containerd
 - Namespace: nexvion
-- Container image: nexvion-web:v1
+- Container image: nexvion-web:v3
 - Replicas: 2
 - Configuration: ConfigMap
 - Service: ClusterIP

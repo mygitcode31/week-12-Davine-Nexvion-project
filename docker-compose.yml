@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: nexvion-web:v1
+    image: nexvion-web:v3
     container_name: nexvion-web-compose
     ports:
       - "8081:80"

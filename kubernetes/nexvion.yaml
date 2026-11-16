@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
         - name: nexvion
-          image: docker.io/library/nexvion-web:v1
+          image: docker.io/library/nexvion-web:v3
           imagePullPolicy: Never
           ports:
             - name: http
