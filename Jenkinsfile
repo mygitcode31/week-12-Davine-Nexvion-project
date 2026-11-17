@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         COMPOSE_PROJECT_NAME = 'nexvion'
+        IMAGE_NAME = 'nexvion-web:v5'
     }
 
     stages {
@@ -34,11 +35,35 @@ pipeline {
             }
         }
 
-        stage('Build and Deploy') {
+        stage('Build Image') {
             steps {
                 sh '''
-                    docker compose -p "$COMPOSE_PROJECT_NAME" config -q
-                    docker compose -p "$COMPOSE_PROJECT_NAME" up -d --build
+                    set -eu
+                    docker compose -p "$COMPOSE_PROJECT_NAME" build nexvion
+                    docker image inspect "$IMAGE_NAME" >/dev/null
+                    echo "PASS: Docker image built"
+                '''
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                sh '''
+                    set -eu
+                    trivy image \
+                      --scanners vuln \
+                      --severity HIGH,CRITICAL \
+                      --exit-code 1 \
+                      "$IMAGE_NAME"
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    set -eu
+                    docker compose -p "$COMPOSE_PROJECT_NAME" up -d --no-build
                 '''
             }
         }
@@ -75,10 +100,10 @@ PY
 
     post {
         success {
-            echo 'Nexvion CI/CD pipeline completed successfully.'
+            echo 'Nexvion CI/CD and security pipeline completed successfully.'
         }
         failure {
-            echo 'Nexvion CI/CD pipeline failed. Check the stage logs.'
+            echo 'Pipeline failed. Check the stage logs before deployment.'
         }
     }
 }

@@ -1,10 +1,13 @@
-FROM nginx:alpine
+FROM nginxinc/nginx-unprivileged:alpine
 
-RUN apk upgrade --no-cache libxslt
+USER root
+RUN apk upgrade --no-cache
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY . /usr/share/nginx/html/
 
-EXPOSE 80
+EXPOSE 8080
+
+USER 101
 
 CMD ["nginx", "-g", "daemon off;"]
