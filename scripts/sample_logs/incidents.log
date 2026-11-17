@@ -1,0 +1,6 @@
+2026-11-17 10:00:01 ERROR HTTP 500 Internal Server Error
+2026-11-17 10:01:12 ERROR connection refused to backend service
+2026-11-17 10:02:30 WARNING Readiness probe failed
+2026-11-17 10:03:45 ERROR Pod status: CrashLoopBackOff
+2026-11-17 10:04:10 WARNING OOMKilled container
+2026-11-17 10:05:00 INFO Nexvion homepage returned HTTP 200
